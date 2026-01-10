@@ -4,6 +4,12 @@
 
 Please read the [top level README.md](../README.md) for instructions on how to set up the environment for this assignment.
 
+## Download 3D Models
+
+This assignment uses several 3D models for testing and rendering.  Please download the models from [this google drive link](https://drive.google.com/drive/folders/1IHUzNzK4TwybdGrdUOpoYpKfIZEC9VVY?usp=share_link)
+
+Place all the files under the `resources` folder in the root of the repository. Note that this folder is ignored by `.gitignore`, so if you are collaborating with your partner, please make sure both of you download the models.
+
 ## What you will do
 
 In this assignment you will implement a basic ray caster that can render a number of different geometric representations. The assignment is divided into two parts which will be released in two steps.
