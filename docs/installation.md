@@ -30,6 +30,13 @@ git submodule update --init --recursive
 
 > **Note**: If you prefer SSH, you can use `git@github.com:stanford-cs248/asst1.git`.
 
+> **Troubleshooting: Submodule Permission Denied**
+> If you see a `Permission denied (publickey)` error, it means Git is trying to use SSH to clone the submodules. You can force Git to use HTTPS instead by running:
+> ```bash
+> git config --global url."https://github.com/".insteadOf git@github.com:
+> ```
+> After running this, try the `git submodule update` command again. Git will prompt for a username and password. Use your GitHub username and a [Personal Access Token](https://github.com/settings/tokens) as the password.
+
 ---
 
 ## Step 2: Platform-Specific Setup
