@@ -1,4 +1,6 @@
-# CS 248A Assignment 1 (Due Jan 26, 11:59pm)
+# CS 248A Assignment 1: Ray Casting Triangle Meshes, Volumes, and Signed Distance Fields 
+
+__Due Jan 26, 11:59pm__
 
 ## Environment Setup
 
