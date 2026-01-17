@@ -38,9 +38,18 @@ public struct BoundingBox
     public float2 hit(Ray ray)
     {
         // TODO: Student implementation starts here.
+        float3 invDir = 1.0 / ray.direction;
+        float3 t0 = (pMin - ray.origin) * invDir;
+        float3 t1 = (pMax - ray.origin) * invDir;
 
-        return float2(0.0, 0.0);
+        // Swap if direction is negative
+        float3 tMin = min(t0, t1);
+        float3 tMax = max(t0, t1);
 
+        float tEnter = max(max(tMin.x, tMin.y), tMin.z);
+        float tExit = min(min(tMax.x, tMax.y), tMax.z);
+
+        return float2(tEnter, tExit);
         // TODO: Student implementation ends here.
     }
 };

@@ -26,6 +26,28 @@ public struct Volume
     {
         // TODO: Student implementation starts here.
 
+        Optional<float2> boundBoxHit = bound.hit(ray);
+        if (!boundBoxHit.hasValue)
+            return Optional<RayHitResult>();
+
+        for (float i = boundBoxHit.value.x; i < boundBoxHit.value.y; i+=STEP_SIZE) {
+            float3 marchingPoint = ray.origin + ray.direction * i;
+            float density = volumeTexBuf.trilinearSample(this.tex, this.getUVW(marchingPoint)).a;
+            if (density >= DENSITY_THRESHOLD) {
+                RayHitResult hitResult;
+                hitResult.t = i;
+                hitResult.normal = -normalize(float3(
+                    volumeTexBuf.trilinearSample(this.tex, this.getUVW(marchingPoint + float3(FINITE_DIFF_DELTA, 0.0, 0.0))).a - 
+                        volumeTexBuf.trilinearSample(this.tex, this.getUVW(marchingPoint - float3(FINITE_DIFF_DELTA, 0.0, 0.0))).a,
+                    volumeTexBuf.trilinearSample(this.tex, this.getUVW(marchingPoint + float3(0.0, FINITE_DIFF_DELTA, 0.0))).a - 
+                        volumeTexBuf.trilinearSample(this.tex, this.getUVW(marchingPoint - float3(0.0, FINITE_DIFF_DELTA, 0.0))).a,
+                    volumeTexBuf.trilinearSample(this.tex, this.getUVW(marchingPoint + float3(0.0, 0.0, FINITE_DIFF_DELTA))).a - 
+                        volumeTexBuf.trilinearSample(this.tex, this.getUVW(marchingPoint - float3(0.0, 0.0, FINITE_DIFF_DELTA))).a
+                ));                
+                return Optional<RayHitResult>(hitResult);
+            }
+        }
+
         // TODO: Student implementation ends here.
 
         return Optional<RayHitResult>();
