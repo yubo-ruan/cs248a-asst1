@@ -24,8 +24,14 @@ public struct Ray
     public Ray transform(float4x4 matrix)
     {
         // TODO: Student implementation starts here.
-
-        return this;
+        float4 newOrigin = mul(matrix, float4(this.origin, 1.0));
+        float4 newDirection = mul(matrix, float4(this.direction, 0.0));
+        
+        return Ray(
+            newOrigin.xyz / newOrigin.w,
+            normalize(newDirection.xyz),
+            this.tRange
+        );
 
         // TODO: Student implementation ends here.
     }

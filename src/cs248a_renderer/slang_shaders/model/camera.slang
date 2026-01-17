@@ -19,9 +19,18 @@ public struct Camera
     public Ray generateRay(float2 uv)
     {
         // TODO: Student implementation starts here.
+        float3 origin = float3(0.0, 0.0, 0.0);
+        float3 direction = float3(
+            (uv.x - 0.5) * canvasSize.x / focalLength,
+            (uv.y - 0.5) * canvasSize.y / focalLength,
+            -1.0
+        );
+        direction = normalize(direction);
 
-        return Ray(float3(0.0), float3(0.0));
-
+        Ray NewRay = Ray(origin, direction, float2(0.0, float.maxValue));
+        NewRay = NewRay.transform(invViewMatrix);
+        return NewRay;
+        
         // TODO: Student implementation ends here.
     }
 }

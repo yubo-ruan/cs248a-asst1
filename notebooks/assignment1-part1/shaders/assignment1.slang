@@ -136,7 +136,7 @@ public float4 rayTrianglesTest(uint2 tid, uint2 canvasSize, StructuredBuffer<Tri
         Triangle triangle = triangles[i];
         Optional<RayHitResult> hitResult = triangle.hit(ray);
 
-        if (hitResult.hasValue && hitResult.value.t < closestT) {
+        if (hitResult.hasValue ) {
             closestT = hitResult.value.t;
             closestColor = triangle.averageColor();
         }

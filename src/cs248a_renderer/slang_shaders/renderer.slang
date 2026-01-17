@@ -30,6 +30,20 @@ public float4 sample(float2 uv, RendererUniform uniforms)
     RayHitResult result;
 
     // TODO: Student implementation starts here.
+    float closestT = float.maxValue;
+    for (uint i = 0; i < uniforms.triangleCount; i++) {
+        Triangle triangle = uniforms.triangleBuf[i];
+        Optional<RayHitResult> hitResult = triangle.hit(ray);
+
+
+        if (hitResult.hasValue && hitResult.value.t < closestT) {
+            closestT = hitResult.value.t;
+            result = RayHitResult(closestT, hitResult.value.normal);
+        }
+    }
+    if (closestT >= float.maxValue)
+        return uniforms.ambientColor;
+
 
     // TODO: Student implementation ends here.
 
@@ -37,7 +51,7 @@ public float4 sample(float2 uv, RendererUniform uniforms)
     // The shading function needs the camera ray and the intersection result.
     SimpleMaterial simpleMaterial;
     float3 color = simpleMaterial.shade(ray, result);
-    return float4(color, 1.0);
+    return float4(color, 1.0);    
 }
 
 /**
@@ -51,8 +65,18 @@ public float4 render(uint2 tid, RendererUniform uniforms)
     // TODO: Student implementation starts here.
 
     // Basic version: no supersampling (remove this implementation once you implement supersampling)
-    float2 uv = (float2(tid) + 0.5) / float2(uniforms.camera.canvasSize);
-    return sample(uv, uniforms);
+
+    float4 finalColor = float4(0.0, 0.0, 0.0, 0.0);
+    for (uint i = 0; i < uniforms.sqrtSpp; i++) {
+        for (uint j = 0; j < uniforms.sqrtSpp; j++) {
+            float2 offset = (float2(i, j) + 0.5) / float2(uniforms.sqrtSpp);
+            float2 uv = (float2(tid) + offset) / float2(uniforms.camera.canvasSize);
+            finalColor += sample(uv, uniforms);
+        }
+    }
+
+
+    return finalColor / float(uniforms.sqrtSpp * uniforms.sqrtSpp);
 
     // TODO: Student implementation ends here.
 }
