@@ -70,6 +70,50 @@ public float4 sample(float2 uv, RendererUniform uniforms)
         }
     }
 
+    for (uint i = 0; i < uniforms.sdfBuf.sphereCount; i++) {
+        SphereSDF sphere = uniforms.sdfBuf.spheres[i];
+        for (float d = ray.tRange.x; d < ray.tRange.y; d += sphere.sdf(ray.origin + d * ray.direction)) {
+            if (sphere.sdf(ray.origin + d * ray.direction) <= EPSILON) {
+                if (d < closestT) {
+                    closestT = d;
+                    result = RayHitResult(d, sphere.normal(ray.origin + d * ray.direction));
+                    break;
+                }
+            }
+        }
+    }
+
+    for (uint i = 0; i < uniforms.sdfBuf.cubeCount; i++) {
+        CubeSDF cube = uniforms.sdfBuf.cubes[i];
+        for (float d = ray.tRange.x; d < ray.tRange.y; d += cube.sdf(ray.origin + d * ray.direction)) {
+            if (cube.sdf(ray.origin + d * ray.direction) <= EPSILON) {
+                if (d < closestT) {
+                    closestT = d;
+                    result = RayHitResult(d, cube.normal(ray.origin + d * ray.direction));
+                    break;
+                }
+            }
+        }
+    }
+
+    if (uniforms.sdfBuf.renderCustomSDF) {
+        CustomSDF custom = uniforms.sdfBuf.customSDF;
+        float t = ray.tRange.x;
+        for (uint step = 0; step < MAX_STEPS && t < ray.tRange.y; step++) {
+            float3 p = ray.origin + t * ray.direction;
+            float dist = custom.sdf(p);
+            if (dist <= EPSILON) {
+                if (t < closestT) {
+                    closestT = t;
+                    result = RayHitResult(t, custom.normal(p));
+                }
+                break;
+            }
+            t += dist;
+        }
+    }
+    
+
     if (closestT >= float.maxValue)
         return uniforms.ambientColor;
 
